@@ -8,6 +8,6 @@ namespace RentCar.Controllers
         {
             ViewBag.Title = "RentCar";
             return View();
-        }
+        }        
     }
 }
