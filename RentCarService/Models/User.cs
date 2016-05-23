@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RentCar.Models
+namespace RentCarService.Models
 {
     public class User
     {
@@ -30,7 +30,7 @@ namespace RentCar.Models
         public string City { get; set; }
 
         [Required(ErrorMessage = "Telefon jest wymagany")]
-        public int Phone { get; set; }
+        public string Phone { get; set; }
 
         [Required(ErrorMessage = "Email jest wymagany")]
         public string Email { get; set; }

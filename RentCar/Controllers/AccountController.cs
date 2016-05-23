@@ -1,12 +1,11 @@
-﻿using RentCar.Models;
-using System.Linq;
+﻿using RentCar.RentCarService;
 using System.Web.Mvc;
 
 namespace RentCar.Controllers
 {
     public class AccountController : Controller
     {
-        MyContext myContext = new MyContext();
+        private readonly RentCarServiceClient _service = new RentCarServiceClient();
 
         public ActionResult LogIn()
         {
@@ -16,11 +15,8 @@ namespace RentCar.Controllers
         [HttpPost]
         public ActionResult Login(User user)
         {
-            var checkUser = myContext.Users.Single(u => u.UserLogin == user.UserLogin && u.Password == user.Password);
-            if (checkUser != null)
+            if (_service.CheckLogin(user))
             {
-                Session["UserId"] = user.UserId.ToString();
-                Session["Name"] = user.Name;
                 return RedirectToAction("LoggedIn");
             }
             else
@@ -32,7 +28,7 @@ namespace RentCar.Controllers
 
         public ActionResult LoggedIn()
         {
-            if (Session["UserId"] != null)
+            if (_service.CheckLoggedIn())
             {
                 return View();
             }
@@ -53,13 +49,10 @@ namespace RentCar.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(User user)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !_service.CheckRegister(user))
             {
-                //Jeszcze trza tu spradzic czy kajsik pieron nie je już we bazie 
-                myContext.Users.Add(user);
-                myContext.SaveChanges();
+                _service.Register(user);
                 ModelState.Clear();
-                user = null;
                 ViewBag.Message = "Successfully Registration Done";
             }
             return View(user);

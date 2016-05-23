@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 
-namespace RentCar.Models
+namespace RentCarService.Models
 {
     public class MyContext :DbContext
     {
