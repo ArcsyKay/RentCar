@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RentCar.Models
+namespace RentCarService.Models
 {
     public class Rent
     {

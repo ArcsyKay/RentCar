@@ -1,4 +1,4 @@
-﻿namespace RentCar.Models
+﻿namespace RentCarService.Models
 {
     public class Car
     {

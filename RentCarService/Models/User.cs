@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RentCar.Models
+namespace RentCarService.Models
 {
     public class User
     {
