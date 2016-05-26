@@ -1,6 +1,6 @@
 ﻿using RentCar.Models;
-using System.Web.Mvc;
 using RentCar.Services;
+using System.Web.Mvc;
 
 namespace RentCar.Controllers
 {
@@ -44,7 +44,7 @@ namespace RentCar.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(User user)
         {
-            if (ModelState.IsValid && !_service.CheckRegister(user))
+            if (ModelState.IsValid && _service.CheckRegister(user))
             {
                 _service.Register(user);
                 ModelState.Clear();
