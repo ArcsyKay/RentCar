@@ -1,11 +1,14 @@
-﻿using RentCar.RentCarService;
+﻿using RentCar.Models;
+using RentCar.Service;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace RentCar.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly RentCarServiceClient _service = new RentCarServiceClient();
+        MyContext myContext = new MyContext();
+        AccountService service = new AccountService();
 
         public ActionResult LogIn()
         {
@@ -15,7 +18,7 @@ namespace RentCar.Controllers
         [HttpPost]
         public ActionResult Login(User user)
         {
-            if (_service.CheckLogin(user))
+            if (service.CheckLogin(user))
             {
                 return RedirectToAction("LoggedIn");
             }
@@ -28,7 +31,7 @@ namespace RentCar.Controllers
 
         public ActionResult LoggedIn()
         {
-            if (_service.CheckLoggedIn())
+            if (service.CheckLoggedIn())
             {
                 return View();
             }
@@ -49,9 +52,9 @@ namespace RentCar.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(User user)
         {
-            if (ModelState.IsValid && !_service.CheckRegister(user))
+            if (ModelState.IsValid && !service.CheckRegister(user))
             {
-                _service.Register(user);
+                service.Register(user);
                 ModelState.Clear();
                 ViewBag.Message = "Successfully Registration Done";
             }
