@@ -1,11 +1,8 @@
-﻿using RentCar.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
+﻿using System.Linq;
 using System.Web.Services;
+using RentCar.Models;
 
-namespace RentCar.Service
+namespace RentCar.Services
 {
     /// <summary>
     /// Summary description for AccountService
@@ -15,21 +12,20 @@ namespace RentCar.Service
     [System.ComponentModel.ToolboxItem(false)]
     // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
     // [System.Web.Script.Services.ScriptService]
-    public class AccountService : System.Web.Services.WebService
+    public class AccountService : WebService
     {
-
-        MyContext myContext = new MyContext();
+        private readonly MyContext _myContext = new MyContext();
 
         [WebMethod]
         public bool CheckLogin(User user)
         {
-            if (myContext.Users.Single(u => u.UserLogin == user.UserLogin && u.Password == user.Password) != null)
+            if (_myContext.Users.Single(u => u.UserLogin == user.UserLogin && u.Password == user.Password) != null)
             {
                 Session["UserId"] = user.UserId.ToString();
                 Session["Name"] = user.Name;
                 return true;
             }
-            else return false;
+            return false;
         }
 
         [WebMethod]
@@ -43,16 +39,15 @@ namespace RentCar.Service
 
         public bool CheckRegister(User user)
         {
-            return myContext.Users.Single(u => u.UserLogin == user.UserLogin || u.Email == user.Email) != null;
+            return _myContext.Users.Single(u => u.UserLogin == user.UserLogin || u.Email == user.Email) != null;
         }
 
         [WebMethod]
 
         public void Register(User user)
         {
-            myContext.Users.Add(user);
-            myContext.SaveChanges();           
-            user = null;           
+            _myContext.Users.Add(user);
+            _myContext.SaveChanges();
         }
     }
 }

@@ -1,14 +1,12 @@
 ﻿using RentCar.Models;
-using RentCar.Service;
-using System.Linq;
 using System.Web.Mvc;
+using RentCar.Services;
 
 namespace RentCar.Controllers
 {
     public class AccountController : Controller
     {
-        MyContext myContext = new MyContext();
-        AccountService service = new AccountService();
+        readonly AccountService _service = new AccountService();
 
         public ActionResult LogIn()
         {
@@ -18,27 +16,21 @@ namespace RentCar.Controllers
         [HttpPost]
         public ActionResult Login(User user)
         {
-            if (service.CheckLogin(user))
+            if (_service.CheckLogin(user))
             {
                 return RedirectToAction("LoggedIn");
             }
-            else
-            {
-                ModelState.AddModelError("", "Login lub hasło jest niepoprawne");
-            }
+            ModelState.AddModelError("", "Login lub hasło jest niepoprawne");
             return View();
         }
 
         public ActionResult LoggedIn()
         {
-            if (service.CheckLoggedIn())
+            if (_service.CheckLoggedIn())
             {
                 return View();
             }
-            else
-            {
-                RedirectToAction("Login");
-            }
+            RedirectToAction("Login");
             return View();
         }
 
@@ -52,9 +44,9 @@ namespace RentCar.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(User user)
         {
-            if (ModelState.IsValid && !service.CheckRegister(user))
+            if (ModelState.IsValid && !_service.CheckRegister(user))
             {
-                service.Register(user);
+                _service.Register(user);
                 ModelState.Clear();
                 ViewBag.Message = "Successfully Registration Done";
             }
