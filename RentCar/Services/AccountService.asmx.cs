@@ -48,6 +48,7 @@ namespace RentCar.Services
         {
             _myContext.Users.Add(user);
             _myContext.SaveChanges();
+            user = null;
         }
     }
 }
