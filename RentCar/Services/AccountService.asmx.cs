@@ -1,6 +1,6 @@
-﻿using RentCar.Models;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Services;
+using RentCar.Models;
 
 namespace RentCar.Services
 {
@@ -14,7 +14,7 @@ namespace RentCar.Services
     // [System.Web.Script.Services.ScriptService]
     public class AccountService : WebService
     {
-        readonly MyContext _myContext = new MyContext();
+        private readonly MyContext _myContext = new MyContext();
 
         [WebMethod]
         public bool CheckLogin(User user)
@@ -39,7 +39,8 @@ namespace RentCar.Services
 
         public bool CheckRegister(User user)
         {
-           return _myContext.Users?.All(u => u.UserLogin != user.UserLogin || u.Email != user.Email) != null;
+            var myBool = _myContext.Users.Any(u => u.UserLogin == user.UserLogin || u.Email == user.Email);
+            return myBool;
         }
 
         [WebMethod]
