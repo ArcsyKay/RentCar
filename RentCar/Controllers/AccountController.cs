@@ -37,7 +37,7 @@ namespace RentCar.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindAsync(login.Email, login.Password);
+                var user = await UserManager.FindAsync(login.UserName, login.Password);
                 if (user != null)
                 {
                     await SignInAsync(user, login.RememberMe);
@@ -64,7 +64,7 @@ namespace RentCar.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { Email = register.Email };
+                var user = new User { UserName = register.UserName };
                 var identityResult = await UserManager.CreateAsync(user, register.Password);
                 if (identityResult.Succeeded)
                 {
