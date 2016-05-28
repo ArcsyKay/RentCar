@@ -1,50 +1,53 @@
-﻿using RentCar.Models;
-using RentCar.Services;
+﻿using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security;
+using RentCar.Models;
 
 namespace RentCar.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly AccountService _accountService = new AccountService();
+        public AccountController() : this(new UserManager<User>(new UserStore<User>(new ApplicationDbContext())))
+        {
+        }
+
+        public AccountController(UserManager<User> userManager)
+        {
+            UserManager = userManager;
+        }
+
+        public UserManager<User> UserManager { get; private set; }
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Login()
+        public ActionResult Login(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(User user)
+        public async Task<ActionResult> Login(Login login, string returnUrl)
         {
-            if (_accountService.CheckLogin(user))
+            if (ModelState.IsValid)
             {
-                FormsAuthentication.SetAuthCookie(user.Name, false);
-                return RedirectToAction("LoggedIn");
+                var user = await UserManager.FindAsync(login.Email, login.Password);
+                if (user != null)
+                {
+                    await SignInAsync(user, login.RememberMe);
+                    return RedirectToLocal(returnUrl);
+                }
+                ModelState.AddModelError("", "Invalid username or password.");
             }
-            ModelState.AddModelError("", "Login lub hasło jest niepoprawne");
-            return View();
-        }
 
-        public ActionResult Logout()
-        {
-            FormsAuthentication.SignOut();
-            return RedirectToAction("Index", "Home");
-        }
-
-        public ActionResult LoggedIn()
-        {
-            if (_accountService.CheckLoggedIn())
-            {
-                return View();
-            }
-            RedirectToAction("Login");
-            return View();
+            // If we got this far, something failed, redisplay form
+            return View(login);
         }
 
         [HttpGet]
@@ -57,15 +60,128 @@ namespace RentCar.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(User user)
+        public async Task<ActionResult> Register(Register register)
         {
-            if (ModelState.IsValid && !_accountService.CheckRegister(user))
+            if (ModelState.IsValid)
             {
-                _accountService.Register(user);
-                ModelState.Clear();
-                ViewBag.Message = "Successfully Registration Done";
+                var user = new User { Email = register.Email };
+                var identityResult = await UserManager.CreateAsync(user, register.Password);
+                if (identityResult.Succeeded)
+                {
+                    await SignInAsync(user, false);
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(identityResult);
             }
-            return View(user);
+
+            // If we got this far, something failed, redisplay form
+            return View(register);
         }
+
+        [HttpGet]
+        public ActionResult Manage(ManageMessageId? message)
+        {
+            ViewBag.StatusMessage =
+                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
+                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+                : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
+                : message == ManageMessageId.Error ? "An error has occurred."
+                : "";
+            ViewBag.HasLocalPassword = HasPassword();
+            ViewBag.ReturnUrl = Url.Action("Manage");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Manage(ManageUser model)
+        {
+            bool hasPassword = HasPassword();
+            ViewBag.HasLocalPassword = hasPassword;
+            ViewBag.ReturnUrl = Url.Action("Manage");
+            if (hasPassword)
+            {
+                if (ModelState.IsValid)
+                {
+                    IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
+                    }
+                    AddErrors(result);
+                }
+            }
+            else
+            {
+                // User does not have a password so remove any validation errors caused by a missing OldPassword field
+                ModelState state = ModelState["OldPassword"];
+                state?.Errors.Clear();
+
+                if (ModelState.IsValid)
+                {
+                    IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Manage", new { Message = ManageMessageId.SetPasswordSuccess });
+                    }
+                    AddErrors(result);
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
+
+        #region Helpers
+
+        private IAuthenticationManager AuthenticationManager => HttpContext.GetOwinContext().Authentication;
+
+        private async Task SignInAsync(User user, bool isPersistent)
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, identity);
+        }
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
+        private bool HasPassword()
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            return user?.PasswordHash != null;
+        }
+
+        public enum ManageMessageId
+        {
+            ChangePasswordSuccess,
+            SetPasswordSuccess,
+            RemoveLoginSuccess,
+            Error
+        }
+
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        #endregion
     }
 }

@@ -6,13 +6,3 @@
 {
     <h4>Hello @Session["Name"]</h4>
 }
-
-@{
-
-    if (!string.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-    {
-        <span class="btn-info btn">
-            @Html.ActionLink(HttpContext.Current.User.Identity.Name + " | Logout ", "Logout", "Account")
-        </span>
-    }
-}
