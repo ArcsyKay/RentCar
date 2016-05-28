@@ -19,7 +19,7 @@ namespace RentCar.Services
         [WebMethod]
         public bool CheckLogin(User user)
         {
-            if (_myContext.Users.SingleOrDefault(u => u.UserLogin == user.UserLogin && u.Password == user.Password) != null)
+            if (_myContext.Users.SingleOrDefault(u => u.Email == user.Email && u.Password == user.Password) != null)
             {
                 Session["UserId"] = user.UserId.ToString();
                 Session["Name"] = user.Name;
@@ -39,7 +39,7 @@ namespace RentCar.Services
 
         public bool CheckRegister(User user)
         {
-            var myBool = _myContext.Users.Any(u => u.UserLogin == user.UserLogin || u.Email == user.Email);
+            var myBool = _myContext.Users.Any(u => u.Email == user.Email || u.Email == user.Email);
             return myBool;
         }
 

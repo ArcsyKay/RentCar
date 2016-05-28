@@ -8,12 +8,7 @@ namespace RentCar.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly AccountService _accountService;
-
-        public AccountController(AccountService accountService)
-        {
-            _accountService = accountService;
-        }
+        private readonly AccountService _accountService = new AccountService();
 
         [HttpGet]
         [AllowAnonymous]

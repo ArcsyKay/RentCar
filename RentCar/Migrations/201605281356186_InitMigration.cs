@@ -44,15 +44,14 @@ namespace RentCar.Migrations
                 c => new
                     {
                         UserId = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        LastName = c.String(nullable: false),
-                        UserLogin = c.String(nullable: false),
+                        Name = c.String(),
+                        LastName = c.String(),
+                        Email = c.String(nullable: false),
                         Password = c.String(nullable: false),
                         ConfirmPassword = c.String(),
-                        Address = c.String(nullable: false),
-                        City = c.String(nullable: false),
-                        Phone = c.String(nullable: false),
-                        Email = c.String(nullable: false),
+                        Address = c.String(),
+                        City = c.String(),
+                        Phone = c.String(),
                     })
                 .PrimaryKey(t => t.UserId);
             
