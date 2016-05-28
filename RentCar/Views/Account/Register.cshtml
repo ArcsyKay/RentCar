@@ -15,7 +15,7 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(user => user.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.Name, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.Name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.Name, "", new { @class = "text-danger" })
@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.LastName, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.LastName, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.LastName, "", new { @class = "text-danger" })
@@ -31,7 +31,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.UserLogin, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.UserLogin, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.UserLogin, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.UserLogin, "", new { @class = "text-danger" })
@@ -39,7 +39,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.Password, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.Password, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.Password, "", new { @class = "text-danger" })
@@ -47,7 +47,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.ConfirmPassword, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.ConfirmPassword, "", new { @class = "text-danger" })
@@ -55,7 +55,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.Address, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.Address, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.Address, "", new { @class = "text-danger" })
@@ -63,7 +63,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.City, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.City, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.City, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.City, "", new { @class = "text-danger" })
@@ -71,7 +71,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.Phone, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.Phone, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.Phone, "", new { @class = "text-danger" })
@@ -79,7 +79,7 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(user => user.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(user => user.Email, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(user => user.Email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(user => user.Email, "", new { @class = "text-danger" })

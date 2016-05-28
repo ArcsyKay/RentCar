@@ -19,7 +19,7 @@ namespace RentCar.Services
         [WebMethod]
         public bool CheckLogin(User user)
         {
-            if (_myContext.Users.Single(u => u.UserLogin == user.UserLogin && u.Password == user.Password) != null)
+            if (_myContext.Users.SingleOrDefault(u => u.UserLogin == user.UserLogin && u.Password == user.Password) != null)
             {
                 Session["UserId"] = user.UserId.ToString();
                 Session["Name"] = user.Name;
